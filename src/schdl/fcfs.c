@@ -1,7 +1,22 @@
 #include <stdio.h>
 #include "process.h"
 
-int main() {
+/* ============================================================
+ * Student implementation area
+ * ============================================================ */
+void fcfs_schedule(Process p[], int n)
+{
+    (void)p;
+    (void)n;
+    /* TODO: Implement FCFS scheduling algorithm here */
+}
+
+/* ============================================================
+ * DO NOT MODIFY MAIN
+ * ============================================================ */
+#ifndef UNIT_TEST
+int main(void)
+{
     int n;
     printf("Número de procesos: ");
     scanf("%d", &n);
@@ -10,6 +25,7 @@ int main() {
     read_processes(p, n);
     init_processes(p, n);
 
+<<<<<<< HEAD
     // TODO: Aquí va la lógica del scheduler
 
     int time = 0;
@@ -35,6 +51,11 @@ int main() {
         printf("   -> P%d terminó en tiempo %d\n", p[i].id, time);
     }
     
+=======
+    fcfs_schedule(p, n);
+
+>>>>>>> e295d968ed0cea49e0d03f3c31992a399f5359b8
     print_results(p, n, "FCFS Scheduling");
     return 0;
 }
+#endif
