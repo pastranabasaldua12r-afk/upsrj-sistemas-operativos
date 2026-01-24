@@ -1,38 +1,53 @@
-#include <stdio.h>
 #include "process.h"
 
 /* ============================================================
  * Student implementation area
  * ============================================================ */
- void fcfs_schedule(Process p[], int n)
+void sjf_schedule(Process p[], int n)
 {
-    // 1. Ordenar por arrival_time
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - i - 1; j++)
-        {
-            if (p[j].arrival_time > p[j + 1].arrival_time)
-            {
-                Process tmp = p[j];
-                p[j] = p[j + 1];
-                p[j + 1] = tmp;
-            }
-        }
-    }
-
-    // 2. Calcular tiempos
     int time = 0;
+    int completed = 0;
+    int done[n];
+    Process result[n];
 
     for (int i = 0; i < n; i++)
-    {
-        if (time < p[i].arrival_time)
-            time = p[i].arrival_time;
+        done[i] = 0;
 
-        p[i].waiting_time = time - p[i].arrival_time;
-        time += p[i].burst_time;
-        p[i].turnaround_time = time - p[i].arrival_time;
+    while (completed < n)
+    {
+        int idx = -1;
+        int min_bt = 1000000;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (!done[i] && p[i].arrival_time <= time)
+            {
+                if (p[i].burst_time < min_bt)
+                {
+                    min_bt = p[i].burst_time;
+                    idx = i;
+                }
+            }
+        }
+
+        if (idx == -1)
+        {
+            time++;
+            continue;
+        }
+
+        done[idx] = 1;
+        p[idx].waiting_time = time - p[idx].arrival_time;
+        time += p[idx].burst_time;
+        p[idx].turnaround_time = time - p[idx].arrival_time;
+
+        result[completed++] = p[idx];
     }
+
+    for (int i = 0; i < n; i++)
+        p[i] = result[i];
 }
+
 /* ============================================================
  * DO NOT MODIFY MAIN
  * ============================================================ */
