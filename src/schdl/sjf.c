@@ -6,26 +6,21 @@
  * ============================================================ */
 void sjf_schedule(Process p[], int n)
 {
-    int time = 0;
-    int completed = 0;
-    int visited[n];
-    Process result[n];
+    int time = 0, completed = 0;
+    int done[n];
+    Process order[n];
 
     for (int i = 0; i < n; i++)
-    {
-        visited[i] = 0;
-    }
+        done[i] = 0;
 
-    /* Main loop: continue until all processes are scheduled */
     while (completed < n)
     {
         int idx = -1;
-        int min_bt = 999999;
+        int min_bt = 1000000;
 
-        /* Search for the shortest job among the processes that have already arrived */
         for (int i = 0; i < n; i++)
         {
-            if (visited[i] == 0 && p[i].arrival_time <= time)
+            if (!done[i] && p[i].arrival_time <= time)
             {
                 if (p[i].burst_time < min_bt)
                 {
@@ -35,30 +30,23 @@ void sjf_schedule(Process p[], int n)
             }
         }
 
-        /* If no process is available, CPU is idle */
         if (idx == -1)
         {
             time++;
             continue;
         }
 
-        visited[idx] = 1;
-
+        done[idx] = 1;
         p[idx].waiting_time = time - p[idx].arrival_time;
-        p[idx].turnaround_time = p[idx].waiting_time + p[idx].burst_time;
         time += p[idx].burst_time;
+        p[idx].turnaround_time = time - p[idx].arrival_time;
 
-        result[completed] = p[idx];
-        completed++;
+        order[completed++] = p[idx];
     }
 
-    /* Copy final execution order */
     for (int i = 0; i < n; i++)
-    {
-        p[i] = result[i];
-    }
+        p[i] = order[i];
 }
-
 /* ============================================================
  * DO NOT MODIFY MAIN
  * ============================================================ */

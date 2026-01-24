@@ -6,15 +6,14 @@
  * ============================================================ */
 void rr_schedule(Process p[], int n, int quantum)
 {
-    int time = 0;
-    int completed = 0;
-    int remaining_bt[n];
-    int visited[n];
+    int time = 0, completed = 0;
+    int remaining[n];
 
     for (int i = 0; i < n; i++)
     {
-        remaining_bt[i] = p[i].burst_time;
-        visited[i] = 0;
+        remaining[i] = p[i].burst_time;
+        p[i].waiting_time = 0;
+        p[i].turnaround_time = 0;
     }
 
     while (completed < n)
@@ -23,36 +22,30 @@ void rr_schedule(Process p[], int n, int quantum)
 
         for (int i = 0; i < n; i++)
         {
-            if (remaining_bt[i] > 0 && p[i].arrival_time <= time)
+            if (remaining[i] > 0 && p[i].arrival_time <= time)
             {
                 executed = 1;
 
-                if (visited[i] == 0)
-                {
+                if (remaining[i] == p[i].burst_time)
                     p[i].waiting_time = time - p[i].arrival_time;
-                    visited[i] = 1;
-                }
 
-                if (remaining_bt[i] > quantum)
+                if (remaining[i] > quantum)
                 {
                     time += quantum;
-                    remaining_bt[i] -= quantum;
+                    remaining[i] -= quantum;
                 }
                 else
                 {
-                    time += remaining_bt[i];
-                    remaining_bt[i] = 0;
+                    time += remaining[i];
+                    remaining[i] = 0;
                     p[i].turnaround_time = time - p[i].arrival_time;
                     completed++;
                 }
             }
         }
 
-        /* If no process was executed, CPU is idle */
         if (!executed)
-        {
             time++;
-        }
     }
 }
 

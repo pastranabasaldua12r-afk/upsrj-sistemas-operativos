@@ -4,20 +4,21 @@
 /* ============================================================
  * Student implementation area
  * ============================================================ */
+
+
 void fcfs_schedule(Process p[], int n)
 {
-    int time = 0;
-
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        if (time < p[i].arrival_time)
+        for (int j = 0; j < n - i - 1; j++)
         {
-            time = p[i].arrival_time;
+            if (p[j].arrival_time > p[j + 1].arrival_time)
+            {
+                Process tmp = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = tmp;
+            }
         }
-
-        p[i].waiting_time = time - p[i].arrival_time;
-        time += p[i].burst_time;
-        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
     }
 }
 
