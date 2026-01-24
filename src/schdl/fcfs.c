@@ -6,8 +6,10 @@
  * ============================================================ */
 
 
+
 void fcfs_schedule(Process p[], int n)
 {
+    // Ordenar por arrival_time
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = 0; j < n - i - 1; j++)
@@ -19,6 +21,16 @@ void fcfs_schedule(Process p[], int n)
                 p[j + 1] = tmp;
             }
         }
+    }
+
+    // Calcular tiempos (SIN CPU idle)
+    p[0].waiting_time = 0;
+    p[0].turnaround_time = p[0].burst_time;
+
+    for (int i = 1; i < n; i++)
+    {
+        p[i].waiting_time = p[i - 1].waiting_time + p[i - 1].burst_time;
+        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
     }
 }
 
