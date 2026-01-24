@@ -4,48 +4,34 @@
 /* ============================================================
  * Student implementation area
  * ============================================================ */
-void sjf_schedule(Process p[], int n)
+ void fcfs_schedule(Process p[], int n)
 {
-    int time = 0, completed = 0;
-    int done[n];
-    Process order[n];
-
-    for (int i = 0; i < n; i++)
-        done[i] = 0;
-
-    while (completed < n)
+    // 1. Ordenar por arrival_time
+    for (int i = 0; i < n - 1; i++)
     {
-        int idx = -1;
-        int min_bt = 1000000;
-
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j < n - i - 1; j++)
         {
-            if (!done[i] && p[i].arrival_time <= time)
+            if (p[j].arrival_time > p[j + 1].arrival_time)
             {
-                if (p[i].burst_time < min_bt)
-                {
-                    min_bt = p[i].burst_time;
-                    idx = i;
-                }
+                Process tmp = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = tmp;
             }
         }
-
-        if (idx == -1)
-        {
-            time++;
-            continue;
-        }
-
-        done[idx] = 1;
-        p[idx].waiting_time = time - p[idx].arrival_time;
-        time += p[idx].burst_time;
-        p[idx].turnaround_time = time - p[idx].arrival_time;
-
-        order[completed++] = p[idx];
     }
 
+    // 2. Calcular tiempos
+    int time = 0;
+
     for (int i = 0; i < n; i++)
-        p[i] = order[i];
+    {
+        if (time < p[i].arrival_time)
+            time = p[i].arrival_time;
+
+        p[i].waiting_time = time - p[i].arrival_time;
+        time += p[i].burst_time;
+        p[i].turnaround_time = time - p[i].arrival_time;
+    }
 }
 /* ============================================================
  * DO NOT MODIFY MAIN
